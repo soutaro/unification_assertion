@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.version     = UnificationAssertion::VERSION
   s.authors     = ["Soutaro Matsumoto"]
   s.email       = ["matsumoto@soutaro.com"]
-  s.homepage    = ""
+  s.homepage    = "https://github.com/soutaro/unification_assertion"
   s.summary     = "Assertion to test unifiability of two structures"
   s.description = "UnificationAssertion defines +assert_unifiable+ assertion to test if given two values are unifiable."
 
