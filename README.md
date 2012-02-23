@@ -93,6 +93,24 @@ value.
       assert unifier[:_a] < unifier[:_b]
     end
 
+## Installation
+
+Update your `Gemfile`.
+
+    gem "unification_assertion", :git => "git@github.com:soutaro/unification_assertion"
+
+## Known Issues
+
+### It skips occur check
+
+The recursive pattern can not be processed well.
+
+    assert_unifiable(:_a, { :x => :_a })
+
+Usual unification algorithm rejects such input by *occur check*.  This
+library is expected to be used for testing, so that I omit the
+checking. (Who in the world will write such comparison?)
+
 ## Author
 
 Written by Soutaro Matsumoto. (matsumoto at soutaro dot com)
