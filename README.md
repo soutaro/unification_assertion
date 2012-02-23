@@ -9,6 +9,18 @@ However, unification algorithm can be used to provide strong and easy
 to use primitives to implement a tests, where compute some value and
 compare it with expected value.
 
+    assert_unifiable({ "timestamp" => :_,
+                       "person" => {
+                       "id" => :_,
+                       "name" => "John",
+                       "email" => "john@example.com",
+                       "created_at" => :_a,
+                       "updated_at" => :_a
+                     }
+                   }, JSON.parse(@response.body))
+
+
+
 ## Introduction
 
 I have been writing some tests like the following Rails functional
