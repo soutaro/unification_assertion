@@ -9,13 +9,13 @@ The assertion will be like the following:
 
     assert_unifiable({ "timestamp" => :_,
                        "person" => {
-                       "id" => :_,
-                       "name" => "John",
-                       "email" => "john@example.com",
-                       "created_at" => :_a,
-                       "updated_at" => :_a
-                     }
-                   }, JSON.parse(@response.body))
+                         "id" => :_,
+                         "name" => "John",
+                         "email" => "john@example.com",
+                         "created_at" => :_a,
+                         "updated_at" => :_a
+                       }
+                     }, JSON.parse(@response.body))
 
 It compares two hash objects, but it does not care the exact value of
 `"timestamp"`, `"id"`, `"created_at"`, and `"updated_at"`. The meta
@@ -60,13 +60,13 @@ comparison called `assert_unifiable`.
 
     assert_unifiable({ "timestamp" => :_,
                        "person" => {
-                       "id" => :_,
-                       "name" => "John",
-                       "email" => "john@example.com",
-                       "created_at" => :_a,
-                       "updated_at" => :_a
-                     }
-                   }, JSON.parse(@response.body))
+                         "id" => :_,
+                         "name" => "John",
+                         "email" => "john@example.com",
+                         "created_at" => :_a,
+                         "updated_at" => :_a
+                       }
+                     }, JSON.parse(@response.body))
 
 Symbols `:_a` for example, where its name starts with `_` is
 interpreted as a meta variable. `assert_unifiable` does not care their
