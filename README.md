@@ -1,13 +1,11 @@
 # UnificationAssertion
 
-UnificationAssertion provides powerful way to compare two structures
-which may be different partialy. The comparison is based on
-unification algorithm, which are used in Prolog implementations and
+UnificationAssertion provides powerful and simple way to compare two
+structures which may be different partialy. The comparison is based on
+unification algorithm, which is used in Prolog implementations and
 type inference algorithms.
 
-However, unification algorithm can be used to provide strong and easy
-to use primitives to implement a tests, where compute some value and
-compare it with expected value.
+The assertion will be like the following:
 
     assert_unifiable({ "timestamp" => :_,
                        "person" => {
@@ -19,7 +17,10 @@ compare it with expected value.
                      }
                    }, JSON.parse(@response.body))
 
-
+It compares two hash objects, but it does not care the exact value of
+`"timestamp"`, `"id"`, `"created_at"`, and `"updated_at"`. The meta
+variable `:_a` is not a black hole but test the equality between
+`"created_at"` and `"updated_at"`.
 
 ## Introduction
 
@@ -86,6 +87,11 @@ value.
     assert_unifiable({ :y => :_a }, { })             # fail, a key :y should be present
     assert_unifiable({ :y => :_a }, { :y => nil })   # pass, :_a will be nil
     assert_unifiable({ :_a => 1 }, { :x => 1 })      # fail, meta variable can not appear as a key
+    
+    # assert_unifiable can receive a block, which will be yielded with the result of unification.
+    assert_unifiable([:_a, :_b], [1, 2]) do |unifier|
+      assert unifier[:_a] < unifier[:_b]
+    end
 
 ## Author
 
