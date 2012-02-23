@@ -99,6 +99,19 @@ Update your `Gemfile`.
 
     gem "unification_assertion", :git => "git@github.com:soutaro/unification_assertion"
 
+Write your test case.
+
+    require "minitest/autorun"
+    require "unification_assertion"
+    
+    class GreatTest < MiniTest::Unit::TestCase
+      include UnificationAssertion
+      
+      def test_something
+        assert_unifiable([:_a, :_b], [1, 2])
+      end
+    end
+
 ## Known Issues
 
 ### It skips occur check
