@@ -97,7 +97,7 @@ value.
 
 Update your `Gemfile`.
 
-    gem "unification_assertion", :git => "git@github.com:soutaro/unification_assertion"
+    gem "unification_assertion", :git => "git://github.com/soutaro/unification_assertion.git"
 
 Write your test case.
 
