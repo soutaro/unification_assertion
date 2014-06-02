@@ -1,6 +1,10 @@
 require "unification_assertion/version"
 
+require "minitest/unit"
+
 module UnificationAssertion
+  include MiniTest::Assertions
+
   module_function
   
   @@comparators = {}
