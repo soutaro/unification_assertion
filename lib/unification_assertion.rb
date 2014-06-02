@@ -9,14 +9,18 @@ module UnificationAssertion
   
   @@comparators = {}
 
-  @@comparators[Array] = lambda {|a, b, message, eqs, unifier, &block|
-    block.call(a.length, b.length, message + " (Array length mismatch)")
-    eqs.concat(a.zip(b))
+  @@comparators[Array] = lambda {|a, b, eqs, unifier, path, block|
+    block.call(a.length, b.length, path + ".length")
+    a.zip(b).each.with_index do |pair, index|
+      pair << path + "[#{index}]"
+      eqs << pair
+    end
+    eqs
   }
 
-  @@comparators[Hash] = lambda {|a, b, message, eqs, unifier, &block|
-    block.call(a.keys.sort, b.keys.sort, message + " (Hash keys mismatch)")
-    eqs.concat(a.keys.map {|key| [a[key], b[key]] })
+  @@comparators[Hash] = lambda {|a, b, eqs, unifier, path, block|
+    block.call(a.keys.sort, b.keys.sort, path + ".keys.sort")
+    eqs.concat(a.keys.map {|key| [a[key], b[key], path+"[#{key.inspect}]"] })
   }
 
   # Comparators are hash from a class to its comparator.
@@ -70,14 +74,14 @@ module UnificationAssertion
   # The |unify| call will return an hash |{ :_a => 1, :_b => 3 }|.
   # The block will be used to test equality between 1 and 1 (it will pass.)
   #
-  def unify(eqs, message = "", unifier = {}, options = {}, &block)
+  def unify(eqs, unifier = {}, options = {}, &block)
     options = { :meta_pattern => /^_/, :wildcard => :_ }.merge!(options)
     
     pattern = options[:meta_pattern]
     wildcard = options[:wildcard]
     
     while eq = eqs.shift
-      a,b = eq
+      a,b,path = eq
       case
       when (Symbol === a and a.to_s =~ pattern)
         unless a == wildcard
@@ -90,9 +94,9 @@ module UnificationAssertion
           unifier = substitute({ b => a }, unifier).merge!(b => a)
         end
       when (a.class == b.class and @@comparators[a.class])
-        @@comparators[a.class].call(a, b, message, eqs, unifier, &block)
+        @@comparators[a.class].call(a, b, eqs, unifier, path, block)
       else
-        yield(a, b, message)
+        yield(a, b, path)
       end
     end
     
@@ -136,9 +140,26 @@ module UnificationAssertion
   # Run unification between |a| and |b|, and fails if they are not unifiable.
   # |assert_unifiable| can have block, which yields the unifier for |a| and |b| if exists.
   # 
-  def assert_unifiable(a, b, message = "", options = {}, &block)
-    unifier = unify([[a, b]], message, {}, options) do |a, b, message|
-      assert_equal(a, b, message)
+  def assert_unifiable(a, b, original_message = "", options = {}, &block)
+    msg = proc {|eq, path|
+      header = if original_message == nil or original_message.length == 0
+            original_message
+          else
+            "No unification"
+          end
+
+      footer = "\nCould not find a solution of equation at it#{path}.\n=> #{mu_pp(eq[0])} == #{mu_pp(eq[1])}"
+
+      message(header, footer) {
+        a_pp = mu_pp(a)
+        b_pp = mu_pp(b)
+
+        "=> #{a_pp}\n=> #{b_pp}"
+      }
+    }
+
+    unifier = unify([[a, b, ""]], {}, options) do |x, y, path|
+      assert(x==y, msg.call([x, y], path))
     end
 
     if block

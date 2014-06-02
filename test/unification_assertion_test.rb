@@ -6,7 +6,7 @@ class UnificationAssertionTest < MiniTest::Unit::TestCase
   
   def call_unify(a, b)
     begin
-      unifier = unify([[a,b]]) do |a, b|
+      unifier = unify([[a,b,""]]) do |a, b|
         unless a == b
           raise "Failure"
         end
@@ -16,7 +16,7 @@ class UnificationAssertionTest < MiniTest::Unit::TestCase
       nil
     end
   end
-  
+
   def test_substitution
     subst = { :a => 1 }
     
