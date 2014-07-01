@@ -1,7 +1,7 @@
 require "minitest/autorun"
 require "unification_assertion"
 
-class UnificationAssertionTest < MiniTest::Unit::TestCase
+class UnificationAssertionTest < Minitest::Test
   include UnificationAssertion
   
   def call_unify(a, b)
