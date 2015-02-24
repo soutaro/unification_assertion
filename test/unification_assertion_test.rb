@@ -1,4 +1,6 @@
 require "unification_assertion"
+require 'active_support'
+ActiveSupport.test_order = :random if ActiveSupport.respond_to? :test_order
 
 class UnificationAssertionTest < ActiveSupport::TestCase
   include UnificationAssertion
