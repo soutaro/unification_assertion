@@ -1,9 +1,12 @@
 require "unification_assertion/version"
 
-require "minitest/unit"
-
 module UnificationAssertion
-  include MiniTest::Assertions
+  if defined? Test::Unit
+    include Test::Unit::Assertions
+  else
+    require 'minitest/autorun'
+    include MiniTest::Assertions
+  end
 
   module_function
   
@@ -149,13 +152,16 @@ module UnificationAssertion
           end
 
       footer = "\nCould not find a solution of equation at it#{path}.\n=> #{mu_pp(eq[0])} == #{mu_pp(eq[1])}"
+      a_pp = mu_pp(a)
+      b_pp = mu_pp(b)
 
-      message(header, footer) {
-        a_pp = mu_pp(a)
-        b_pp = mu_pp(b)
-
-        "=> #{a_pp}\n=> #{b_pp}"
-      }
+      if respond_to? :build_message
+        build_message "=> #{a_pp}\n=> #{b_pp}"
+      else
+        message(header, footer) {
+          "=> #{a_pp}\n=> #{b_pp}"
+        }
+      end
     }
 
     unifier = unify([[a, b, ""]], {}, options) do |x, y, path|
