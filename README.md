@@ -1,7 +1,7 @@
 # UnificationAssertion
 
 UnificationAssertion provides powerful and simple way to compare two
-structures which may be different partialy. The comparison is based on
+structures which may be different partially. The comparison is based on
 unification algorithm, which is used in Prolog implementations and
 type inference algorithms.
 
