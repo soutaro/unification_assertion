@@ -1,7 +1,8 @@
-require "minitest/autorun"
 require "unification_assertion"
+require 'active_support'
+ActiveSupport.test_order = :random if ActiveSupport.respond_to? :test_order
 
-class UnificationAssertionTest < Minitest::Test
+class UnificationAssertionTest < ActiveSupport::TestCase
   include UnificationAssertion
   
   def call_unify(a, b)
@@ -91,12 +92,12 @@ class UnificationAssertionTest < Minitest::Test
 
   def test_assertion_failure
     # 1 and 3 is incompatible
-    assert_raises(MiniTest::Assertion) do
+    assert_raises(assertion_error) do
       assert_unifiable([:_a, :_a], [1, 3])
     end
 
     # Time.now and Time.now+1 is incompatible
-    assert_raises(MiniTest::Assertion) do
+    assert_raises(assertion_error) do
       assert_unifiable({ :created_at => :_a,
                          :updated_at => :_a },
                        { :created_at => Time.now,
@@ -104,12 +105,12 @@ class UnificationAssertionTest < Minitest::Test
     end
     
     # There is no ``row'' variable
-    assert_raises(MiniTest::Assertion) do
+    assert_raises(assertion_error) do
       assert_unifiable([:_a, :_b], [1,2,3])
     end
     
     # There is no ``row'' variable
-    assert_raises(MiniTest::Assertion) do
+    assert_raises(assertion_error) do
       assert_unifiable({ :_a => 3 }, { :x => :_b })
     end
   end
@@ -123,5 +124,13 @@ class UnificationAssertionTest < Minitest::Test
     # Who on the earth write this kind of test? (meaningless and it will result different from what the programmer expects)
     #
     assert_equal({ :_a => { :x => :_a }}, call_unify(:_a, { :x => :_a }))
+  end
+
+  def assertion_error
+    if defined? Test::Unit
+      Test::Unit::AssertionFailedError
+    else
+      MiniTest::Assertion
+    end
   end
 end
